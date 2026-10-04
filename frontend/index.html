@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EK HR DB Intelligence — Database Intelligence Platform</title>
+  <meta name="description" content="Enterprise HR database performance monitoring and analytics platform by Emre Kaçar, Database Administrator." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+        <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-title">EK HR</div>
+      <div class="logo-sub">DBA Suite</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">OVERVIEW</div>
+    <a href="#" class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item" data-tab="employees" id="nav-employees">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Employees
+    </a>
+    <a href="#" class="nav-item" data-tab="departments" id="nav-departments">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Departments
+    </a>
+    <a href="#" class="nav-item" data-tab="performance" id="nav-performance">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Performance
+    </a>
+
+    <div class="nav-group-label" style="margin-top:16px">DBA TOOLS</div>
+    <a href="#" class="nav-item" data-tab="partitions" id="nav-partitions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
+      Partitions
+    </a>
+    <a href="#" class="nav-item" data-tab="indexes" id="nav-indexes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      Index Health
+    </a>
+    <a href="#" class="nav-item" data-tab="explain" id="nav-explain">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      EXPLAIN Analyzer
+    </a>
+    <a href="#" class="nav-item" data-tab="audit" id="nav-audit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Audit Log
+    </a>
+    <a href="#" class="nav-item" data-tab="tables" id="nav-tables">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Table Stats
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="author-badge">
+      <div class="author-avatar">EK</div>
+      <div>
+        <div class="author-name">Emre Kaçar</div>
+        <div class="author-role">Database Administrator</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════════ -->
+<main class="main-content">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="page-title">Dashboard</h1>
+      <div class="breadcrumb">EK HR DB Intelligence / <span id="breadcrumb-sub">Overview</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="db-status" id="db-status">
+        <span class="status-dot"></span>
+        <span class="status-text">Connecting...</span>
+      </div>
+      <button class="btn-refresh" id="btn-global-refresh" title="Refresh all data">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════ TAB: DASHBOARD ══════ -->
+  <section class="tab-content active" id="tab-dashboard">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi-card" id="kpi-active">
+        <div class="kpi-icon kpi-icon-blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-active">—</div>
+        <div class="kpi-label">Active Employees</div>
+        <div class="kpi-delta" id="kd-active"></div>
+      </div>
+      <div class="kpi-card" id="kpi-payroll">
+        <div class="kpi-icon kpi-icon-green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-payroll">—</div>
+        <div class="kpi-label">Monthly Payroll</div>
+        <div class="kpi-delta" id="kd-payroll"></div>
+      </div>
+      <div class="kpi-card" id="kpi-avgsalary">
+        <div class="kpi-icon kpi-icon-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-avg">—</div>
+        <div class="kpi-label">Avg. Salary</div>
+        <div class="kpi-delta" id="kd-avg"></div>
+      </div>
+      <div class="kpi-card" id="kpi-perf">
+        <div class="kpi-icon kpi-icon-orange">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-perf">—</div>
+        <div class="kpi-label">Avg. Perf. Score</div>
+        <div class="kpi-delta" id="kd-perf">/5.0</div>
+      </div>
+      <div class="kpi-card" id="kpi-depts">
+        <div class="kpi-icon kpi-icon-cyan">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-depts">—</div>
+        <div class="kpi-label">Departments</div>
+        <div class="kpi-delta" id="kd-depts"></div>
+      </div>
+      <div class="kpi-card" id="kpi-audit">
+        <div class="kpi-icon kpi-icon-red">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="kpi-value" id="kv-audit">—</div>
+        <div class="kpi-label">Audit Events (24h)</div>
+        <div class="kpi-delta" id="kd-audit"></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="charts-row">
+      <div class="chart-card chart-card-wide">
+        <div class="chart-header">
+          <h3>Hiring Trend — Monthly New Hires</h3>
+          <span class="chart-badge">Materialized View</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartHiring"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Employee Status Breakdown</h3>
+        </div>
+        <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Salary Distribution by Grade</h3>
+          <span class="chart-badge">MV + Window Functions</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartSalary"></canvas></div>
+      </div>
+      <div class="chart-card chart-card-wide">
+        <div class="chart-header">
+          <h3>Payroll by Department</h3>
+          <span class="chart-badge">Covering Index Scan</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartPayroll"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: EMPLOYEES ══════ -->
+  <section class="tab-content" id="tab-employees">
+    <div class="toolbar">
+      <input type="text" class="search-input" id="emp-search" placeholder="🔍  Search name or email..." />
+      <select class="filter-select" id="emp-dept-filter"><option value="">All Departments</option></select>
+      <select class="filter-select" id="emp-status-filter">
+        <option value="">All Statuses</option>
+        <option value="ACTIVE">Active</option>
+        <option value="ON_LEAVE">On Leave</option>
+        <option value="TERMINATED">Terminated</option>
+      </select>
+      <button class="btn-primary" id="btn-emp-search">Search</button>
+    </div>
+    <div class="table-card">
+      <div class="table-meta" id="emp-table-meta"></div>
+      <div class="table-scroll">
+        <table class="data-table" id="emp-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Email</th><th>Department</th>
+              <th>Grade</th><th>Salary</th><th>Status</th>
+              <th>Hire Date</th><th>Tenure</th>
+            </tr>
+          </thead>
+          <tbody id="emp-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: DEPARTMENTS ══════ -->
+  <section class="tab-content" id="tab-departments">
+    <div class="dept-grid" id="dept-grid"></div>
+  </section>
+
+  <!-- ══════ TAB: PERFORMANCE ══════ -->
+  <section class="tab-content" id="tab-performance">
+    <div class="charts-row">
+      <div class="chart-card chart-card-wide">
+        <div class="chart-header">
+          <h3>Performance Leaderboard — Top 20</h3>
+          <span class="chart-badge">Materialized View + RANK()</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartLeaderboard"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Retention Cohort Analysis</h3>
+          <span class="chart-badge">Partition Pruning</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartRetention"></canvas></div>
+      </div>
+    </div>
+    <div class="table-card" style="margin-top:24px">
+      <div class="chart-header"><h3>Top Performers Table</h3></div>
+      <div class="table-scroll">
+        <table class="data-table" id="perf-table">
+          <thead>
+            <tr>
+              <th>Rank</th><th>Employee</th><th>Department</th>
+              <th>Title</th><th>Avg Score</th><th>Rating</th>
+              <th>Reviews</th><th>Dept Rank</th>
+            </tr>
+          </thead>
+          <tbody id="perf-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: PARTITIONS ══════ -->
+  <section class="tab-content" id="tab-partitions">
+    <div class="info-banner">
+      <div class="info-banner-icon">🗂</div>
+      <div>
+        <strong>Range Partitioning</strong> — The <code>employees</code> and <code>salary_history</code> tables are partitioned by <code>hire_date</code> / <code>effective_date</code> using PostgreSQL's declarative partitioning. Each yearly partition enables <em>partition pruning</em>, dramatically reducing I/O for date-range queries. This pattern is identical to Oracle's <code>PARTITION BY RANGE</code>.
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="chart-header"><h3>Partition Details</h3></div>
+      <div class="table-scroll">
+        <table class="data-table" id="part-table">
+          <thead>
+            <tr><th>Parent Table</th><th>Partition</th><th>Range</th><th>Live Rows</th><th>Size</th></tr>
+          </thead>
+          <tbody id="part-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: INDEX HEALTH ══════ -->
+  <section class="tab-content" id="tab-indexes">
+    <div class="info-banner">
+      <div class="info-banner-icon">⚡</div>
+      <div>
+        <strong>Index Strategy</strong> — This schema uses <em>Covering Indexes</em> (INCLUDE), <em>Partial Indexes</em> (WHERE clause), <em>BRIN</em> for time-series, and <em>GIN</em> for JSONB/full-text search. The usage statistics below come directly from <code>pg_stat_user_indexes</code>.
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="chart-header"><h3>Index Usage Report</h3></div>
+      <div class="table-scroll">
+        <table class="data-table" id="idx-table">
+          <thead>
+            <tr><th>Table</th><th>Index</th><th>Size</th><th>Scans</th><th>Tuples Read</th><th>Health</th></tr>
+          </thead>
+          <tbody id="idx-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: EXPLAIN ANALYZER ══════ -->
+  <section class="tab-content" id="tab-explain">
+    <div class="explain-header">
+      <h3>EXPLAIN ANALYZE — Query Plan Visualizer</h3>
+      <p>Run real PostgreSQL <code>EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)</code> on pre-defined query scenarios and inspect the execution plan.</p>
+    </div>
+    <div class="explain-buttons" id="explain-buttons"></div>
+    <div id="explain-result" class="explain-result hidden">
+      <div class="explain-sql-box">
+        <div class="explain-sql-label">SQL Query</div>
+        <pre id="explain-sql-text"></pre>
+      </div>
+      <div class="explain-stats-row" id="explain-stats"></div>
+      <div class="explain-plan-box">
+        <div class="explain-sql-label">Execution Plan (JSON)</div>
+        <pre id="explain-plan-text" class="code-block"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: AUDIT LOG ══════ -->
+  <section class="tab-content" id="tab-audit">
+    <div class="info-banner">
+      <div class="info-banner-icon">🔒</div>
+      <div>
+        <strong>JSONB Audit Trail</strong> — Every INSERT, UPDATE, and DELETE on the <code>employees</code> table is captured by an AFTER trigger into the <code>audit_log</code> table. Old and new row data are stored as JSONB, queryable with GIN indexes for forensic analysis.
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="chart-header"><h3>Recent Audit Events</h3></div>
+      <div class="table-scroll">
+        <table class="data-table" id="audit-table">
+          <thead>
+            <tr><th>ID</th><th>Table</th><th>Operation</th><th>Record ID</th><th>Changed By</th><th>Timestamp</th><th>Changes</th></tr>
+          </thead>
+          <tbody id="audit-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ TAB: TABLE STATS ══════ -->
+  <section class="tab-content" id="tab-tables">
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header"><h3>Cache Hit Ratio</h3><span class="chart-badge">pg_statio_user_tables</span></div>
+        <div class="chart-wrap"><canvas id="chartCache"></canvas></div>
+      </div>
+      <div class="chart-card chart-card-wide">
+        <div class="chart-header"><h3>Table & Index Size</h3><span class="chart-badge">pg_stat_user_tables</span></div>
+        <div class="chart-wrap"><canvas id="chartTableSize"></canvas></div>
+      </div>
+    </div>
+    <div class="table-card" style="margin-top:24px">
+      <div class="chart-header"><h3>Table Statistics</h3></div>
+      <div class="table-scroll">
+        <table class="data-table" id="ts-table">
+          <thead>
+            <tr><th>Table</th><th>Total Size</th><th>Table Size</th><th>Index Size</th><th>Live Rows</th><th>Dead Rows</th><th>Last Vacuum</th></tr>
+          </thead>
+          <tbody id="ts-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

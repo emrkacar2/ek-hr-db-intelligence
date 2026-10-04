@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ek_hr_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ek_hr_db
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ./database/procedures:/docker-entrypoint-initdb.d/procedures:ro
+      - ./database/triggers:/docker-entrypoint-initdb.d/triggers:ro
+      - ./database/views:/docker-entrypoint-initdb.d/views:ro
+      - ./scripts/init.sh:/docker-entrypoint-initdb.d/00_init.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U postgres -d ek_hr_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ek_hr_api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST:     postgres
+      DB_PORT:     5432
+      DB_NAME:     ek_hr_db
+      DB_USER:     postgres
+      DB_PASS:     postgres
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend:/app/frontend:ro
+
+volumes:
+  postgres_data:
